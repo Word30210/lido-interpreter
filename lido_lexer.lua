@@ -42,6 +42,8 @@ function lido_lexer.tokenization(line)
         elseif char == "\n" or char == "|" then
             stack = "|"
             i = i + 1
+        else
+            i = i + 1
         end
         table.insert(t, stack)
         stack = ""
@@ -49,6 +51,12 @@ function lido_lexer.tokenization(line)
     return t
 end
 
-splitM.printT(lido_lexer.tokenization("// ... * ,,,\n// .. % ."))
+function  lido_lexer.parsing(token_table)
+    -- TODO 이거 만들어라
+end
+
+
+
+splitM.printT(lido_lexer.tokenization("// ... * ,,,"))
 
 return lido_lexer
