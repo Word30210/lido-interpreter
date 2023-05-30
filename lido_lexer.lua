@@ -52,11 +52,13 @@ function lido_lexer.tokenization(line)
 end
 
 function  lido_lexer.parsing(token_table)
-    -- TODO 이거 만들어라
+    if #token_table > 0 then
+        
+    end
 end
 
 
 
-splitM.printT(lido_lexer.tokenization("// ... * ,,,"))
+splitM.printT(lido_lexer.tokenization("//...*,,,"))
 
 return lido_lexer
