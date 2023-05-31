@@ -68,23 +68,41 @@ end
 function  lido_lexer.parsing(token_table)
     local function lidonumber_to_number(lidonumber)
         local count = 0
+        local eval = ""
         for i, v in ipairs(splitM.STT(lidonumber)) do
-            if v == "." then count = count + 1
-            elseif v == "," then count = count - 1
+            if v == "." then
+                count = count + 1
+            elseif v == "," then
+                count = count - 1
+            elseif v == "*" then
+                if eval == "" then
+                    eval = tostring(count).."*"
+                else
+                    eval = eval..tostring(count).."*"
+                end
+                count = 0
+            elseif v == "%" then
+                if eval == "" then
+                    eval = tostring(count).."/"
+                else
+                    eval = eval..tostring(count).."/"
+                end
+                count = 0
             end
         end
-        return count
+        eval = eval..tostring(count)
+        return loadstring(string.format("return %s", eval))() --[[loadstring 에러 발생. 고치기 바람]]
     end
     if #token_table == 0 then return end
     if token_table[1].value == "/" then --[[/<index: number> <value>]]
         local syntax = {"number", "none", "number"}
         for i, v in ipairs(syntax) do
-            if token_table[i + 1].type == v then
-                print("ezpz")
-            else
+            if token_table[i + 1].type ~= v then
                 print(string.format([["%s": "%s" -> something: "%s"]], token_table[i + 1].value, token_table[i + 1].type, v))
+                return
             end
         end
+        return string.format("set %f %f", lidonumber_to_number(token_table[2].value), lidonumber_to_number(token_table[4].value))
     elseif token_table[1].value == "//" then
         local syntax = {"number"}
         for i, v in ipairs(syntax) do
@@ -97,10 +115,8 @@ function  lido_lexer.parsing(token_table)
     end
 end
 
-
-
-local tokens = lido_lexer.tokenization("// ")
-lido_lexer.parsing(tokens)
+local tokens = lido_lexer.tokenization("/.*. ..")
+print(lido_lexer.parsing(tokens))
 
 return lido_lexer
 
