@@ -85,16 +85,26 @@ function  lido_lexer.parsing(token_table)
                 print(string.format([["%s": "%s" -> something: "%s"]], token_table[i + 1].value, token_table[i + 1].type, v))
             end
         end
+    elseif token_table[1].value == "//" then
+        local syntax = {"number"}
+        for i, v in ipairs(syntax) do
+            if token_table[i + 1].type == v then
+                print("ezpz")
+            else
+                print(string.format([["%s": "%s" -> something: "%s"]], token_table[i + 1].value, token_table[i + 1].type, v))
+            end
+        end
     end
 end
 
 
 
-local tokens = lido_lexer.tokenization("/...*... ,,,")
+local tokens = lido_lexer.tokenization("// ")
 lido_lexer.parsing(tokens)
 
 return lido_lexer
 
 --[[
     TODO: lido_lexer.parsing 만들으라 맨이야
+          token들의 길이가 적거나 많을때 예외 처리하기
 ]]

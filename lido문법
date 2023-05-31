@@ -36,12 +36,12 @@ ex) /. ..
     2번째 변수에 1번째 변수의 값을 넣음
 
 토큰 형태
-None = 00 -> " "
-VariableDeclaration = 01 -> "/"
-VariableCall = 02 -> "\"
-Print = 03 -> "//"
-sum = 04 -> "."
-sub = 05 -> ","
-mul = 06 -> "*"
-div = 07 -> "%"
-enter = ff -> "|"
+None -> " "
+VariableDeclaration -> "/"
+VariableCall -> "\"
+Print -> "//"
+sum -> "."
+sub -> ","
+mul -> "*"
+div -> "%"
+EOL -> "|"
