@@ -7,6 +7,7 @@ function lido_lexer.tokenization(line)
     local t = {}
     local i = 1
     local stack = ""
+    local token = {}
     while i <= #line do
         local char = line[i]
         if char == "/" then
@@ -14,47 +15,57 @@ function lido_lexer.tokenization(line)
                 stack = stack.."/"
                 i = i + 1
             end
+            if stack == "/" then
+                token = { type = "VariableDeclaration", value = stack }
+            elseif stack == "//" then
+                token = { type = "print", value = stack }
+            end
         elseif char == "." then
-            while i <= #line and line[i] == "." do
-                stack = stack.."."
+            local isnumber = line[i] == "," or line[i] == "." or line[i] == "*" or line[i] == "%"
+            while i <= #line and isnumber do
+                stack = stack..line[i]
                 i = i + 1
+                isnumber = line[i] == "," or line[i] == "." or line[i] == "*" or line[i] == "%"
             end
+            token = { type = "number", value = stack }
         elseif char == "," then
-            while i <= #line and line[i] == "," do
-                stack = stack..","
+            local isnumber = line[i] == "," or line[i] == "." or line[i] == "*" or line[i] == "%"
+            while i <= #line and isnumber do
+                stack = stack..line[i]
                 i = i + 1
+                isnumber = line[i] == "," or line[i] == "." or line[i] == "*" or line[i] == "%"
             end
+            token = { type = "number", value = stack }
         elseif char == "*" then
             while i <= #line and line[i] == "*" do
                 stack = stack.."*"
                 i = i + 1
             end
+            token = { type = "*", value = stack }
         elseif char == "%" then
             while i <= #line and line[i] == "%" do
                 stack = stack.."%"
                 i = i + 1
             end
+            token = { type = "%", value = stack }
         elseif char == " " then
-            while i <= #line and line[i] == " " do
-                stack = stack.." "
-                i = i + 1
-            end
+            stack = " "
+            i = i + 1
+            token = { type = "none", value = stack }
         elseif char == "\n" or char == "|" then
             stack = "|"
             i = i + 1
+            token = { type = "line_end", value = stack }
         else
             i = i + 1
         end
-        table.insert(t, stack)
+        table.insert(t, token)
         stack = ""
     end
     return t
 end
 
 function  lido_lexer.parsing(token_table)
-    local function is_number(str)
-        
-    end
     local function lidonumber_to_number(lidonumber)
         local count = 0
         for i, v in ipairs(splitM.STT(lidonumber)) do
@@ -65,22 +76,25 @@ function  lido_lexer.parsing(token_table)
         return count
     end
     if #token_table == 0 then return end
-    local headCommand = ""
-    if token_table[1] == "/" then --[[/<index: number> <value>]]
-        local syntax = {"number", "None", "number"}
+    if token_table[1].value == "/" then --[[/<index: number> <value>]]
+        local syntax = {"number", "none", "number"}
         for i, v in ipairs(syntax) do
-            
+            if token_table[i + 1].type == v then
+                print("ezpz")
+            else
+                print(string.format([["%s": "%s" -> something: "%s"]], token_table[i + 1].value, token_table[i + 1].type, v))
+            end
         end
     end
 end
 
 
 
-splitM.printT(lido_lexer.tokenization("//...*,,,"))
+local tokens = lido_lexer.tokenization("/...*... ,,,")
+lido_lexer.parsing(tokens)
 
 return lido_lexer
 
 --[[
-    TODO: lido_lexer.parsing 만들고
-          is_number 만들어라 게이야
+    TODO: lido_lexer.parsing 만들으라 맨이야
 ]]
