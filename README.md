@@ -1,2 +1,0 @@
-# lido-interpreter
-dwjk
