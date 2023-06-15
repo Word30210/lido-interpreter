@@ -1,4 +1,4 @@
 # lido-interpreter
 
-I decided to start from scratch
-bruh
+I'm currently learning compiler theory, so I'm stopping development.
+Maybe we'll start making it again around July.
